@@ -1,0 +1,13 @@
+#!/bin/bash
+SHELL_HOME=$(cd "$(dirname "$0")/../"; pwd)
+. /etc/profile
+CLASSPATH=${CLASSPATH}:.:$SHELL_HOME/lib/*:$SHELL_HOME/conf
+echo $CLASSPATH
+
+JAVA=$JAVA_HOME/bin/java
+JAVA_HEAP_MAX=-Xmx2048m
+CLASS=net.joywise.bigdata.zid_rpc.ZidRpcConsumer
+LIBRARY="-Djava.libary.path=/usr/lib"
+
+JVM_ARGS="-Xms128M -XX:PermSize=64M -XX:MaxPermSize=256M -XX:SurvivorRatio=8 -XX:MaxTenuringThreshold=7 -XX:GCTimeRatio=19 -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -XX:+UseCMSCompactAtFullCollection -XX:CMSFullGCsBeforeCompaction=0 -XX:CMSInitiatingOccupancyFraction=70 -XX:SoftRefLRUPolicyMSPerMB=0  "
+exec "$JAVA"  $JVM_ARGS -classpath "$CLASSPATH" $LIBRARY $CLASS  "$@" &

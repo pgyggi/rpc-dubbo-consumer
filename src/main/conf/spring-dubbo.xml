@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd 
+    http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context.xsd
+    http://code.alibabatech.com/schema/dubbo
+    http://code.alibabatech.com/schema/dubbo/dubbo.xsd"
+	default-autowire="byName" default-lazy-init="true">
+	
+	<dubbo:application name="datacenter" />
+	
+	<!-- 	禁止启动时检查，而是调用时检查  -->
+	<dubbo:consumer check="false" timeout="5000" retries="0"/>
+	
+	<!-- 	使用multicast广播注册中心发现服务地址  -->
+	<!-- 224.0.0.0～224.0.0.255为预留的组播地址（永久组地址），地址224.0.0.0保留不做分配，其它地址供路由协议使用； -->
+	<!-- 224.0.1.0～224.0.1.255是公用组播地址，可以用于Internet； -->
+	<!-- 224.0.2.0～238.255.255.255为用户可用的组播地址（临时组地址），全网范围内有效； -->
+	<!-- 239.0.0.0～239.255.255.255为本地管理组播地址，仅在特定的本地范围内有效。 -->
+	<!-- 要注意的是，一些标准软件已经使用了固定的组播IP地址，如Upnp使用了239.255.255.250，OSPF使用了224.0.0.5等。 -->
+	<!-- 一般而言你使用临时组播地址就可以了。 -->
+	<!-- 组播MAC地址是针对组播IP地址经过转换而来的，算是一种虚拟的MAC地址；之所以出现这个，是因为TCP/IP层之下的链路层是基于MAC地址来传输数据的。组播因为既不是点对点的传输，又不是广播，所以需要一个特殊的MAC地址 -->
+	<!-- 24.0.0.0~224.2.255.255的绝大部分地址已被使用，建议使用时避开上述地址（详细使用情况请参阅RFC 1700）。   -->
+	<!-- 224.0.0.0 基础地址，保留，不能被任何群组使用   -->
+	<!-- 224.0.0.1 全主机群组（all hosts group），指参加本IP组播的所有主机、路由器、网关（不是指整个互连网）   -->
+	<!-- 224.0.0.2 本子网上的路由器（all routers on a LAN）  224.0.0.4 DVMRP*路由器（DVMRP Routers）  -->
+	<!-- 224.0.0.5 本子网上的OSPF*路由器(all OSPF routers on a LAN)  224.0.0.6 本子网上被指定的OSPF路由器(all designated OSPF routers on a LAN)   -->
+	<!-- 224.0.1.1 网络时间协议（Network Time Protocol，NTP）  224.0.5.000-224.0.5.127 蜂窝式数字信息包数据发送主机组（CDPD Groups）  -->
+	<!-- 224.1.0.0-224.1.255.255 基于流的协议组播主机组（Stream Protocol Multicast Groups）   -->
+	<!-- 224.2.0.0-224.2.255.255 多媒体会议呼叫（Multimedia Conference Calls）  *注：DVMRP是Distance vector multicast routing protocol的缩写 -->
+	<!--<dubbo:registry address="multicast://224.5.6.7:1234?unicast=false" check="false" />-->
+
+	<!-- 使用zookeeper注册中心发现服务地址 -->
+	 	<dubbo:registry address="zookeeper://10.255.254.4:2181" /> 
+
+	<!-- 用dubbo协议在20880端口发现服务 -->
+	<dubbo:protocol name="dubbo" port="20880" />
+
+	<!-- 使用配置方式发现接口 -->
+	<dubbo:reference interface="info.zznet.zud.rpc.service.RpcPolicyService" id="rpcPolicyService" check="false" />
+	<dubbo:reference interface="info.zznet.collector.rpc.api.RpcCollectorSettingService" id="rpcCollectorSettingService" check="false" />
+	<dubbo:reference interface="info.zznet.collector.rpc.api.RpcMonitorDataService" id="rpcMonitorDataService" check="false" />
+	<dubbo:reference interface="info.zznet.collector.rpc.api.RpcNetLogService" id="rpcNetLogService" check="false" />
+	<dubbo:reference interface="info.zznet.collector.rpc.api.RpcOnlineUserService" id="rpcOnlineUserService" check="false" />
+	<dubbo:reference interface="info.zznet.collector.rpc.api.RpcStatService" id="rpcStatService" check="false" />
+	<dubbo:reference interface="info.joywise.uc.rpc.api.RpcZidService" id="rpcZidService" check="false" />
+    <dubbo:reference interface="info.zznet.zud.rpc.service.RpcSignService" id="rpcSignService" check="false" />
+	
+</beans>
